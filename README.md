@@ -150,6 +150,30 @@ At this stage, the server:
 ✔ **Serves `"404.html"` with `404 NOT FOUND`** for all other paths.  
 ✔ **Still operates as a single-threaded server**.  
 
-These updates **enhance response handling and improve maintainability**, setting the stage for future optimizations such as **multi-threading** and **dynamic content generation**. 🚀  
+These updates **enhance response handling and improve maintainability**, setting the stage for future optimizations such as **multi-threading** and **dynamic content generation**.
 
 
+# **Milestone 4: Simulating a Slow Response**  
+
+In this milestone, I modified the web server to **simulate slow responses** for specific routes. This demonstrates how a **single-threaded server** behaves when handling multiple concurrent requests, especially when one request takes significantly longer to process.  
+
+---
+
+## **Handling Delayed Responses**  
+
+The updated `handle_connection()` function now includes a new route, `/sleep`, which **intentionally delays the response by 10 seconds** using `thread::sleep()`. This simulates a **slow operation**, such as a complex database query or an external API call.  
+
+This change highlights the **blocking nature** of single-threaded servers.  
+
+---
+
+## **How the Server Handles Requests**  
+
+- The server processes **connections sequentially** from `listener.incoming()`.  
+- Since it runs on **a single thread**, it can **only handle one request at a time**.  
+- If a request includes `thread::sleep()`, it **blocks the entire server** until the delay completes.  
+- This accurately reflects how **historical single-threaded servers** functioned and emphasizes the need for **advanced concurrency models** to handle multiple requests efficiently.  
+
+---
+
+By simulating slow responses, this milestone provides insight into **server performance limitations** and serves as a foundation for implementing **multi-threading and asynchronous processing** in future improvements.
