@@ -213,3 +213,15 @@ The server manages requests using an **MPSC (Multiple Producer, Single Consumer)
 - Instead of handling requests sequentially, the server now **submits tasks to the thread pool**, allowing **concurrent request execution**.  
 
 This milestone lays the foundation for **scalable, high-performance web server development**, enabling future enhancements such as **dynamic thread management and non-blocking I/O operations**.
+
+
+# **Bonus**  
+
+As an additional improvement, I introduced a `build` function in the `ThreadPool` implementation, providing a **more robust alternative** to the `new` constructor.  
+
+While both functions create a `ThreadPool` with worker threads, they **handle errors differently**:  
+
+- The `new` function follows Rust's convention by using `assert!` to **panic** if invalid parameters are provided (e.g., a pool size of zero). This ensures that constructors named `"new"` never fail.  
+- The `build` function, on the other hand, returns a `Result<ThreadPool, PoolCreationError>`, allowing the **calling code to handle failures gracefully** instead of terminating the program.  
+
+This approach improves **error handling and flexibility**, making the `ThreadPool` implementation more resilient and adaptable.
