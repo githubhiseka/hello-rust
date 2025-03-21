@@ -177,3 +177,39 @@ This change highlights the **blocking nature** of single-threaded servers.
 ---
 
 By simulating slow responses, this milestone provides insight into **server performance limitations** and serves as a foundation for implementing **multi-threading and asynchronous processing** in future improvements.
+
+
+# **Milestone 5: Multithreaded Server**  
+
+In this milestone, I upgraded the server to a **multithreaded architecture** using a **thread pool implementation**. This enhancement **removes the performance bottlenecks** from the previous version by enabling **concurrent request handling**.  
+
+---
+
+## **Implementing a Thread Pool**  
+
+The thread pool allows the server to process multiple connections simultaneously. When initialized with `ThreadPool::new(4)`, it creates **four persistent worker threads** that remain active throughout the server's lifecycle.  
+
+The server manages requests using an **MPSC (Multiple Producer, Single Consumer) channel**, which facilitates **safe message passing** between threads. This channel is protected by **Arc (Atomic Reference Counter) and Mutex (Mutual Exclusion)** to ensure **thread-safe access**.  
+
+### **How It Works**  
+1. The **main thread** listens for connections and assigns tasks to the worker pool.  
+2. Each connection is **encapsulated as a closure** and sent to the worker threads using the `execute()` method.  
+3. Worker threads **continuously monitor the channel** for new jobs, process them, and return to an idle state once complete.  
+
+---
+
+## **Performance Improvements**  
+
+- **Parallel request processing:** The server can now handle **multiple client connections at the same time**, up to the number of worker threads.  
+- **Efficient resource usage:** Time-intensive requests (such as the `/sleep` route with a 10-second delay) **only occupy a single worker thread**, while others remain free to handle additional requests.  
+- **Eliminates head-of-line blocking:** Unlike the previous **single-threaded** implementation, slow requests **no longer delay** unrelated ones.  
+
+---
+
+## **Implementation Overview**  
+
+- Introduced a **new `lib.rs` file** implementing the **`ThreadPool`** design pattern.  
+- Updated the main server code to **initialize a thread pool with 4 worker threads**.  
+- Instead of handling requests sequentially, the server now **submits tasks to the thread pool**, allowing **concurrent request execution**.  
+
+This milestone lays the foundation for **scalable, high-performance web server development**, enabling future enhancements such as **dynamic thread management and non-blocking I/O operations**.
