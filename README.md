@@ -77,3 +77,20 @@ At this stage, the web server:
 - **Does not parse request paths or methods**, meaning all incoming requests are treated the same.  
 
 This serves as a foundational step before implementing **multi-threading, request handling, and response generation**. 
+
+
+# **Milestone 2: Serving HTML Responses**  
+
+![Commit 2 screen capture](/assets/images/commit2.png)  
+
+In this milestone, the `handle_connection()` function has been updated to generate a **proper HTTP response** that includes a **status line, headers, and HTML content**. The server constructs and sends the response with the following components:  
+
+1. A status line indicating success → `(HTTP/1.1 200 OK)`  
+2. A `Content-Length` header specifying the response body's size  
+3. Two **CRLF** sequences (`\r\n\r\n`) to separate headers from the body  
+4. HTML content loaded from a file  
+
+The server reads the HTML content from a file called `"hello.html"` using `fs::read_to_string()` and sends it to the client using `stream.write_all()`.  
+
+At this stage, the server **always** returns a `200 OK` response regardless of the request, **only serves a single HTML file**, and continues to **handle connections sequentially** in a **single-threaded** manner. 🚀
+
